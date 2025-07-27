@@ -13,13 +13,13 @@
 async function init() {
 const data = await d3.csv("https://flunky.github.io/cars2017.csv", function(d) {
    return {
-      xvar: Math.log10(+d.AverageCityMPG),
-      yvar: Math.log10(+d.AverageHighwayMPG),
+      xvar: +d.AverageCityMPG,
+      yvar: +d.AverageHighwayMPG,
       cylinder: +d.EngineCylinders
    } ; } );
 
-   var x = d3.scaleLinear().domain([Math.log10(10),Math.log10(150)]).range([0,200])
-   var y = d3.scaleLinear().domain([Math.log10(10),Math.log10(150)]).range([200,0])
+   var x = d3.scaleLinear().domain([10,150]).range([0,200])
+   var y = d3.scaleLinear().domain([10,150]).range([200,0])
 
    var svg = d3.select("svg")
       .attr("width",600)
@@ -39,7 +39,7 @@ d3.select("svg").append("g")
 
 d3.select("svg").append("g")
    .attr("transform","translate(50,550)")
-   .call(d3.axisBottom(x).tickValues([Math.log10(10),Math.log10(20),Math.log10(50),Math.log10(100)]).tickFormat(function(d) {return Math.pow(10,d) ; })) ;
+   .call(d3.axisBottom(x).tickValues([10,20,50,100]).tickFormat(function(d) {return d ; })) ;
 }
 
 </script>
