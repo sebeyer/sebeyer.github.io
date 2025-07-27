@@ -1,7 +1,47 @@
 <!DOCTYPE html>
+
 <html>
-<body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<style> circle {fill: lightblue; stroke: black;} </style>
+<body onload='init()'>
+
+<svg width=300 height=300>
+</svg>
+
+<script>
+
+async function init() {
+const data = await d3.csv("https://flunky.github.io/cars2017.csv", function(d) {
+   return {
+      xvar: Math.log10(+d.AverageCityMPG),
+      yvar: Math.log10(+d.AverageHighwayMPG),
+      cylinder: +d.EngineCylinders
+   } ; } );
+
+   var x = d3.scaleLinear().domain([Math.log10(10),Math.log10(150)]).range([0,200])
+   var y = d3.scaleLinear().domain([Math.log10(10),Math.log10(150)]).range([200,0])
+
+   var svg = d3.select("svg")
+      .attr("width",300)
+      .attr("height",300)
+
+  var g = svg.append("g")
+      .attr("transform","translate(50,50)")
+
+   g.selectAll("circle").data(data).enter().append("circle")
+      .attr("cx", function(d) {return x(d.xvar); })
+      .attr("cy", function(d) {return y(d.yvar); })
+      .attr("r", function(d,i) {return 2 + d.cylinder; }) ;
+
+d3.select("svg").append("g")
+   .attr("transform","translate(50,50)")
+   .call(d3.axisLeft(y).tickValues([Math.log10(10),Math.log10(20),Math.log10(50),Math.log10(100)]).tickFormat(function(d) {return Math.pow(10,d) ; })) ;
+
+d3.select("svg").append("g")
+   .attr("transform","translate(50,250)")
+   .call(d3.axisBottom(x).tickValues([Math.log10(10),Math.log10(20),Math.log10(50),Math.log10(100)]).tickFormat(function(d) {return Math.pow(10,d) ; })) ;
+}
+
+</script>
 </body>
 </html>
