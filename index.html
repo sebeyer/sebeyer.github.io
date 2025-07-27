@@ -5,7 +5,7 @@
 <style> circle {fill: lightblue; stroke: black;} </style>
 <body onload='init()'>
 
-<svg width=300 height=300>
+<svg>
 </svg>
 
 <script>
@@ -38,7 +38,7 @@ d3.select("svg").append("g")
    .call(d3.axisLeft(y).tickValues([10,20,50,100]).tickFormat(function(d) {return d ; })) ;
 
 d3.select("svg").append("g")
-   .attr("transform","translate(50,250)")
+   .attr("transform","translate(50,550)")
    .call(d3.axisBottom(x).tickValues([Math.log10(10),Math.log10(20),Math.log10(50),Math.log10(100)]).tickFormat(function(d) {return Math.pow(10,d) ; })) ;
 }
 
