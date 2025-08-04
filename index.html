@@ -38,12 +38,10 @@ fuelDomain = ["Gasoline", "Diesel", "Electricity"];
 makeColor = d3.scaleOrdinal()
    .domain(makeDomain)
    .range(d3.quantize(d3.interpolateSinebow, 44))
-   .unknown("#ccc");
 
 fuelColor = d3.scaleOrdinal()
    .domain(fuelDomain)
    .range(d3.quantize(d3.interpolateSinebow, 3))
-   .unknown("#ccc");
 
 var svg = d3.select("#svg_id")
       .attr("width",600)
@@ -64,14 +62,12 @@ function axes() {
 
 
    svg.append("text")
-      .attr("class", "axis-title")
       .attr("x", 50 + 250)   
       .attr("y", 590)       
       .attr("text-anchor", "middle")
       .text("Average City MPG");
 
    svg.append("text")
-      .attr("class", "axis-title")
       .attr("text-anchor", "middle")
       .attr("transform", `rotate(-90, 15, ${50 + 250})`)
       .attr("x", 15)
@@ -85,21 +81,18 @@ function scene1() {
    axes();
 
    svg.append("text")
-      .attr("class", "scene-title")
-      .attr("x", 300)   // center of the 600-wide SVG
+      .attr("x", 300)   
       .attr("y", 24)
       .attr("text-anchor", "middle")
       .text("Association with make of the car");
 
    svg.append("text")
-      .attr("class", "scene-title")
       .attr("x", 100)   
       .attr("y", 80)
       .style("font", "12px sans-serif")
       .text("Circle color reflects model make.");
 
    svg.append("text")
-      .attr("class", "scene-title")
       .attr("x", 100)   
       .attr("y", 100)
       .style("font", "12px sans-serif")
@@ -134,21 +127,18 @@ function scene2() {
    axes();
 
    svg.append("text")
-      .attr("class", "scene-title")
-      .attr("x", 300)   // center of the 600-wide SVG
+      .attr("x", 300)  
       .attr("y", 24)
       .attr("text-anchor", "middle")
       .text("Association with the fuel the car uses");
 
    svg.append("text")
-      .attr("class", "scene-title")
       .attr("x", 100)   
       .attr("y", 80)
       .style("font", "12px sans-serif")
       .text("Circle color reflects the fuel.");
 
    svg.append("text")
-      .attr("class", "scene-title")
       .attr("x", 100)   
       .attr("y", 100)
       .style("font", "12px sans-serif")
@@ -183,21 +173,18 @@ function scene3() {
    axes();
 
    svg.append("text")
-      .attr("class", "scene-title")
       .attr("x", 300)   
       .attr("y", 24)
       .attr("text-anchor", "middle")
       .text("Effect of cylinder size");
 
    svg.append("text")
-      .attr("class", "scene-title")
       .attr("x", 100)   
       .attr("y", 80)
       .style("font", "12px sans-serif")
       .text("Circle diameter reflects number of cylinders.");
 
    svg.append("text")
-      .attr("class", "scene-title")
       .attr("x", 100)   
       .attr("y", 100)
       .style("font", "12px sans-serif")
