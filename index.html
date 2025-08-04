@@ -86,54 +86,6 @@ function scene1() {
 
    svg.append("text")
       .attr("class", "scene-title")
-      .attr("x", 300)   
-      .attr("y", 24)
-      .attr("text-anchor", "middle")
-      .text("Effect of cylinder size");
-
-   svg.append("text")
-      .attr("class", "scene-title")
-      .attr("x", 100)   
-      .attr("y", 80)
-      .style("font", "12px sans-serif")
-      .text("Circle diameter reflects number of cylinders.");
-
-   svg.append("text")
-      .attr("class", "scene-title")
-      .attr("x", 100)   
-      .attr("y", 100)
-      .style("font", "12px sans-serif")
-      .text("Hover over the circles to identify the number of cylinders.");
-
-  tooltip = d3.select("#svg_id")
-     .append("text")
-     .attr("class", "tooltip")
-     .style("font", "12px sans-serif")
-
-   var g = svg.append("g")
-      .attr("transform","translate(50,50)")
-
-   g.selectAll("circle").data(data).enter().append("circle")
-      .attr("cx", function(d) {return x(d.xvar); })
-      .attr("cy", function(d) {return y(d.yvar); })
-      .attr("r", function(d,i) {return 2 + d.cylinder; }) 
-      .on("mouseover", function(d) {
-          tooltip
-            .text(`Cylinders: ${d.cylinder}`)
-            .attr("x", 100) 
-            .attr("y", 120)  
-            .style("opacity", 1);
-      })
-      .on("mouseout", function() { tooltip.style("opacity", 0); 
-      });
-}
-
-function scene2() {
-   clearSVG();
-   axes();
-
-   svg.append("text")
-      .attr("class", "scene-title")
       .attr("x", 300)   // center of the 600-wide SVG
       .attr("y", 24)
       .attr("text-anchor", "middle")
@@ -165,7 +117,7 @@ function scene2() {
    g.selectAll("circle").data(data).enter().append("circle")
       .attr("cx", function(d) {return x(d.xvar); })
       .attr("cy", function(d) {return y(d.yvar); })
-      .attr("r", function(d,i) {return 3 + d.cylinder; }) 
+      .attr("r", function(d,i) {return 4; }) 
       .style("fill", function(d) {return makeColor(d.make); }) 
       .on("mouseover", function(d) {
          tooltip.text(`Make: ${d.make}`)
@@ -177,7 +129,7 @@ function scene2() {
       });
 }
 
-function scene3() {
+function scene2() {
    clearSVG();
    axes();
 
@@ -214,12 +166,60 @@ function scene3() {
    circles = g.selectAll("circle").data(data).enter().append("circle")
       .attr("cx", function(d) {return x(d.xvar); })
       .attr("cy", function(d) {return y(d.yvar); })
-      .attr("r", function(d,i) {return 4 + d.cylinder; }) 
+      .attr("r", function(d,i) {return 4; }) 
       .style("fill", function(d) {return fuelColor(d.fuel); })
       .on("mouseover", function(d) {
         tooltip.text(`Fuel: ${d.fuel}`)
             .attr("x", 100) 
             .attr("y", 120) 
+            .style("opacity", 1);
+      })
+      .on("mouseout", function() { tooltip.style("opacity", 0); 
+      });
+}
+
+function scene3() {
+   clearSVG();
+   axes();
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 300)   
+      .attr("y", 24)
+      .attr("text-anchor", "middle")
+      .text("Effect of cylinder size");
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 100)   
+      .attr("y", 80)
+      .style("font", "12px sans-serif")
+      .text("Circle diameter reflects number of cylinders.");
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 100)   
+      .attr("y", 100)
+      .style("font", "12px sans-serif")
+      .text("Hover over the circles to identify the number of cylinders.");
+
+  tooltip = d3.select("#svg_id")
+     .append("text")
+     .attr("class", "tooltip")
+     .style("font", "12px sans-serif")
+
+   var g = svg.append("g")
+      .attr("transform","translate(50,50)")
+
+   g.selectAll("circle").data(data).enter().append("circle")
+      .attr("cx", function(d) {return x(d.xvar); })
+      .attr("cy", function(d) {return y(d.yvar); })
+      .attr("r", function(d,i) {return 2 + d.cylinder; }) 
+      .on("mouseover", function(d) {
+          tooltip
+            .text(`Cylinders: ${d.cylinder}`)
+            .attr("x", 100) 
+            .attr("y", 120)  
             .style("opacity", 1);
       })
       .on("mouseout", function() { tooltip.style("opacity", 0); 
