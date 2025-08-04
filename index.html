@@ -2,45 +2,231 @@
 
 <html>
 <script src='https://d3js.org/d3.v5.min.js'></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 <style> circle {fill: lightblue; stroke: black;} </style>
-<body onload='init()'>
 
-<svg>
+<body>
+
+<div style="position: absolute; top: 620px; left: 210px;">
+   <button onclick="scene1()">Scene 1</button>
+   <button onclick="scene2()">Scene 2</button>
+   <button onclick="scene3()">Scene 3</button>
+</div>
+
+<svg id="svg_id" width="600" height="600">
 </svg>
 
 <script>
 
-async function init() {
-const data = await d3.csv("https://flunky.github.io/cars2017.csv", function(d) {
-   return {
-      xvar: +d.AverageCityMPG,
-      yvar: +d.AverageHighwayMPG,
-      cylinder: +d.EngineCylinders
-   } ; } );
+async function loadData() {
+   data = await d3.csv("https://flunky.github.io/cars2017.csv", function(d) {
+      return {
+         xvar: +d.AverageCityMPG,
+         yvar: +d.AverageHighwayMPG,
+         cylinder: +d.EngineCylinders,
+         make: (d.Make || "").trim(),
+         fuel: (d.Fuel || "").trim()
+      } ; }); }
 
-   var x = d3.scaleLinear().domain([10,150]).range([0,200])
-   var y = d3.scaleLinear().domain([10,150]).range([200,0])
+var x = d3.scaleLinear().domain([10,150]).range([0,500])
+var y = d3.scaleLinear().domain([10,150]).range([500,0])
 
-   var svg = d3.select("svg")
+makeDomain = ["Acura", "Alfa Romeo", "Aston Martin", "Audi", "Bentley", "BMW", "Buick", "Cadillac", "Chevrolet", "Chrysler", "Dodge", "Ferrari", "Fiat", "Ford", "Genesis", "GMC", "Honda", "Hyundai", "Infiniti", "Jaguar", "Jeep", "Kia", "Lamborghini", "Land Rover", "Lexus", "Lincoln", "Lotus", "Maserati", "Mazda", "McLaren Automotive", "Mercedes-Benz", "MINI", "Mitsubishi", "Nissan", "Porsche", "Ram", "Rolls-Royce", "Roush Performance", "smart", "Subaru", "Tesla", "Toyota", "Volkswagen", "Volvo"];
+
+fuelDomain = ["Gasoline", "Diesel", "Electricity"];
+
+makeColor = d3.scaleOrdinal()
+   .domain(makeDomain)
+   .range(d3.quantize(d3.interpolateSinebow, 44))
+   .unknown("#ccc");
+
+fuelColor = d3.scaleOrdinal()
+   .domain(fuelDomain)
+   .range(d3.quantize(d3.interpolateSinebow, 3))
+   .unknown("#ccc");
+
+var svg = d3.select("#svg_id")
       .attr("width",600)
       .attr("height",600)
 
-  var g = svg.append("g")
+function clearSVG() {
+   svg.html("");
+}
+
+function axes() {
+   svg.append("g")
+      .attr("transform","translate(50,50)")
+      .call(d3.axisLeft(y).tickValues([10,20,50,100]).tickFormat(function(d) {return d ; })) ;
+
+   svg.append("g")
+      .attr("transform","translate(50,550)")
+      .call(d3.axisBottom(x).tickValues([10,20,50,100]).tickFormat(function(d) {return d ; })) ;
+
+
+   svg.append("text")
+      .attr("class", "axis-title")
+      .attr("x", 50 + 250)   
+      .attr("y", 590)       
+      .attr("text-anchor", "middle")
+      .text("Average City MPG");
+
+   svg.append("text")
+      .attr("class", "axis-title")
+      .attr("text-anchor", "middle")
+      .attr("transform", `rotate(-90, 15, ${50 + 250})`)
+      .attr("x", 15)
+      .attr("y", 50 + 250)
+      .text("Average Highway MPG");
+
+}
+
+function scene1() {
+   clearSVG();
+   axes();
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 300)   
+      .attr("y", 24)
+      .attr("text-anchor", "middle")
+      .text("Effect of cylinder size");
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 100)   
+      .attr("y", 80)
+      .style("font", "12px sans-serif")
+      .text("Circle diameter reflects number of cylinders.");
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 100)   
+      .attr("y", 100)
+      .style("font", "12px sans-serif")
+      .text("Hover over the circles to identify the number of cylinders.");
+
+  tooltip = d3.select("#svg_id")
+     .append("text")
+     .attr("class", "tooltip")
+     .style("font", "12px sans-serif")
+
+   var g = svg.append("g")
       .attr("transform","translate(50,50)")
 
    g.selectAll("circle").data(data).enter().append("circle")
       .attr("cx", function(d) {return x(d.xvar); })
       .attr("cy", function(d) {return y(d.yvar); })
-      .attr("r", function(d,i) {return 2 + d.cylinder; }) ;
-
-d3.select("svg").append("g")
-   .attr("transform","translate(50,50)")
-   .call(d3.axisLeft(y).tickValues([10,20,50,100]).tickFormat(function(d) {return d ; })) ;
-
-d3.select("svg").append("g")
-   .attr("transform","translate(50,550)")
-   .call(d3.axisBottom(x).tickValues([10,20,50,100]).tickFormat(function(d) {return d ; })) ;
+      .attr("r", function(d,i) {return 2 + d.cylinder; }) 
+      .on("mouseover", function(d) {
+          tooltip
+            .text(`Cylinders: ${d.cylinder}`)
+            .attr("x", 100) 
+            .attr("y", 120)  
+            .style("opacity", 1);
+      })
+      .on("mouseout", function() { tooltip.style("opacity", 0); 
+      });
 }
+
+function scene2() {
+   clearSVG();
+   axes();
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 300)   // center of the 600-wide SVG
+      .attr("y", 24)
+      .attr("text-anchor", "middle")
+      .text("Association with make of the car");
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 100)   
+      .attr("y", 80)
+      .style("font", "12px sans-serif")
+      .text("Circle color reflects model make.");
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 100)   
+      .attr("y", 100)
+      .style("font", "12px sans-serif")
+      .text("Hover over the circles to identify the make of the car.");
+
+  tooltip = d3.select("#svg_id")
+     .append("text")
+     .attr("class", "tooltip")
+     .style("font", "12px sans-serif")
+     .raise();
+
+   var g = svg.append("g")
+      .attr("transform","translate(50,50)")
+
+   g.selectAll("circle").data(data).enter().append("circle")
+      .attr("cx", function(d) {return x(d.xvar); })
+      .attr("cy", function(d) {return y(d.yvar); })
+      .attr("r", function(d,i) {return 3 + d.cylinder; }) 
+      .style("fill", function(d) {return makeColor(d.make); }) 
+      .on("mouseover", function(d) {
+         tooltip.text(`Make: ${d.make}`)
+            .attr("x", 100) 
+            .attr("y", 120)  
+            .style("opacity", 1);
+      })
+      .on("mouseout", function() { tooltip.style("opacity", 0); 
+      });
+}
+
+function scene3() {
+   clearSVG();
+   axes();
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 300)   // center of the 600-wide SVG
+      .attr("y", 24)
+      .attr("text-anchor", "middle")
+      .text("Association with the fuel the car uses");
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 100)   
+      .attr("y", 80)
+      .style("font", "12px sans-serif")
+      .text("Circle color reflects the fuel.");
+
+   svg.append("text")
+      .attr("class", "scene-title")
+      .attr("x", 100)   
+      .attr("y", 100)
+      .style("font", "12px sans-serif")
+      .text("Hover over the circles to identify the fuel the car uses.");
+
+   var g = svg.append("g")
+      .attr("transform","translate(50,50)")
+
+   tooltip = d3.select("#svg_id")
+      .append("text")
+      .attr("class", "tooltip")
+      .style("font", "12px sans-serif")
+      .raise();
+
+   circles = g.selectAll("circle").data(data).enter().append("circle")
+      .attr("cx", function(d) {return x(d.xvar); })
+      .attr("cy", function(d) {return y(d.yvar); })
+      .attr("r", function(d,i) {return 4 + d.cylinder; }) 
+      .style("fill", function(d) {return fuelColor(d.fuel); })
+      .on("mouseover", function(d) {
+        tooltip.text(`Fuel: ${d.fuel}`)
+            .attr("x", 100) 
+            .attr("y", 120) 
+            .style("opacity", 1);
+      })
+      .on("mouseout", function() { tooltip.style("opacity", 0); 
+      });
+}
+
+loadData().then(scene1);
 
 </script>
 </body>
